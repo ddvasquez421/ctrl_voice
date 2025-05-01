@@ -91,7 +91,7 @@ st.title("🎙️ INTERFACES MULTIMODALES")
 st.subheader("🧬 Control por Voz con MQTT")
 
 # Imagen decorativa
-image = Image.open("voice_ctrl.jpg")
+image = Image.open("roboto.png")
 st.image(image, width=280, caption="CyberVoice Interface")
 
 st.markdown("## 🗣️ Da una orden por voz")
