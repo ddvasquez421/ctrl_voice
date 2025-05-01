@@ -8,40 +8,50 @@ import time
 import paho.mqtt.client as paho
 import json
 
-# Estilo cibernético aplicado globalmente
+# Estilo neón real aplicado
 st.set_page_config(page_title="CyberVoice Control", layout="centered", page_icon="🎙️")
+
 st.markdown("""
-<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500&display=swap" rel="stylesheet">
 <style>
-    html, body, [class*="css"]  {
-        background-color: #0f0f1a;
-        color: #00ffcc;
-        font-family: 'Orbitron', sans-serif;
-    }
-    h1, h2, h3, h4, h5 {
-        color: #00ffff;
-        font-family: 'Orbitron', sans-serif;
-    }
-    .stButton>button {
-        background-color: #1f1f2e;
-        color: #00ffcc;
-        border: 1px solid #00ffcc;
-        border-radius: 8px;
-        padding: 0.5em 1.5em;
-        font-size: 16px;
-    }
-    .st-bf, .st-cg, .stTextInput>div>div>input {
-        background-color: #1f1f2e !important;
-        color: #00ffcc !important;
-        border: 1px solid #00ffcc !important;
-    }
-    .bk-btn {
-        background-color: #222244 !important;
-        color: #00ffcc !important;
-        font-family: 'Orbitron', sans-serif !important;
-        border-radius: 8px;
-        border: 1px solid #00ffff;
-    }
+/* Fuente futurista desde Google Fonts */
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@600&display=swap');
+
+html, body, [class*="css"]  {
+    background-color: #050510 !important;
+    color: #39ff14 !important;
+    font-family: 'Orbitron', sans-serif !important;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    color: #00ffe7 !important;
+}
+
+.stButton>button {
+    background: linear-gradient(145deg, #00ffe7, #39ff14);
+    color: black;
+    border: none;
+    padding: 0.75em 2em;
+    font-size: 16px;
+    font-family: 'Orbitron', sans-serif;
+    border-radius: 12px;
+    box-shadow: 0 0 15px #00ffe7;
+    transition: all 0.3s ease;
+}
+.stButton>button:hover {
+    background: #050510;
+    color: #00ffe7;
+    border: 2px solid #00ffe7;
+    box-shadow: 0 0 20px #00ffe7;
+}
+
+.stImage>img {
+    border: 3px solid #00ffe7;
+    border-radius: 12px;
+}
+
+hr {
+    border-top: 1px solid #00ffe7;
+}
 </style>
 """, unsafe_allow_html=True)
 
@@ -66,12 +76,12 @@ st.subheader("🧬 Control por Voz con MQTT")
 
 # Imagen
 image = Image.open("voice_ctrl.jpg")
-st.image(image, width=220, caption="CyberVoice Interface")
+st.image(image, width=250, caption="CyberVoice Interface")
 
 st.markdown("### 🗣️ Da una orden por voz")
 st.caption("Presiona el botón y habla. El mensaje se enviará vía MQTT al broker.")
 
-# Botón de reconocimiento de voz (JavaScript)
+# Botón Bokeh para reconocimiento de voz
 stt_button = Button(label="🎤 Iniciar reconocimiento", width=250)
 stt_button.js_on_event("button_click", CustomJS(code="""
     var recognition = new webkitSpeechRecognition();
@@ -92,7 +102,7 @@ stt_button.js_on_event("button_click", CustomJS(code="""
     recognition.start();
 """))
 
-# Escucha y captura resultados
+# Activador del botón
 result = streamlit_bokeh_events(
     stt_button,
     events="GET_TEXT",
@@ -102,22 +112,20 @@ result = streamlit_bokeh_events(
     debounce_time=0
 )
 
+# Procesamiento de voz
 if result and "GET_TEXT" in result:
     texto_voz = result.get("GET_TEXT").strip()
     st.success(f"🎧 Escuchado: `{texto_voz}`")
     
-    # Publicar por MQTT
     client1.on_publish = on_publish
     client1.connect(broker, port)
     message = json.dumps({"Act1": texto_voz})
     client1.publish("voice_ctrl", message)
 
-    # Crear carpeta temporal si no existe
     try:
         os.mkdir("temp")
     except:
         pass
 
-# Footer
 st.markdown("---")
-st.markdown("<center><sub>CyberVoice Interface - Powered by MQTT & JS Speech API</sub></center>", unsafe_allow_html=True)
+st.markdown("<center><sub style='color:#39ff14'>CyberVoice Interface - Neon Protocol v1.0</sub></center>", unsafe_allow_html=True)
