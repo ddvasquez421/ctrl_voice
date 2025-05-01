@@ -8,49 +8,65 @@ import time
 import paho.mqtt.client as paho
 import json
 
-# Estilo neón real aplicado
-st.set_page_config(page_title="CyberVoice Control", layout="centered", page_icon="🎙️")
+# Configuración de página
+st.set_page_config(
+    page_title="CyberVoice Control",
+    page_icon="🧠",
+    layout="centered"
+)
 
+# Estilo visual neón + fondo animado
 st.markdown("""
 <style>
-/* Fuente futurista desde Google Fonts */
 @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@600&display=swap');
 
-html, body, [class*="css"]  {
-    background-color: #050510 !important;
+body {
+    background-color: black !important;
+    font-family: 'Orbitron', sans-serif;
     color: #39ff14 !important;
-    font-family: 'Orbitron', sans-serif !important;
+    overflow: hidden;
 }
 
-h1, h2, h3, h4, h5, h6 {
+html {
+    background: url('https://media.giphy.com/media/l0HlBO7eyXzSZkJri/giphy.gif') no-repeat center center fixed;
+    background-size: cover;
+}
+
+h1, h2, h3, h4 {
     color: #00ffe7 !important;
+    text-shadow: 0 0 5px #00ffe7;
 }
 
 .stButton>button {
-    background: linear-gradient(145deg, #00ffe7, #39ff14);
-    color: black;
-    border: none;
+    background: transparent;
+    border: 2px solid #39ff14;
+    color: #39ff14;
     padding: 0.75em 2em;
     font-size: 16px;
     font-family: 'Orbitron', sans-serif;
     border-radius: 12px;
-    box-shadow: 0 0 15px #00ffe7;
-    transition: all 0.3s ease;
+    box-shadow: 0 0 10px #39ff14, 0 0 20px #00ffe7;
+    transition: all 0.4s ease-in-out;
 }
+
 .stButton>button:hover {
-    background: #050510;
-    color: #00ffe7;
-    border: 2px solid #00ffe7;
-    box-shadow: 0 0 20px #00ffe7;
+    background-color: #00ffe7;
+    color: black;
+    box-shadow: 0 0 25px #00ffe7;
 }
 
 .stImage>img {
-    border: 3px solid #00ffe7;
-    border-radius: 12px;
+    border-radius: 16px;
+    box-shadow: 0 0 20px #00ffe7;
+    border: 2px solid #00ffe7;
 }
 
 hr {
     border-top: 1px solid #00ffe7;
+}
+
+small, footer {
+    color: #39ff14 !important;
 }
 </style>
 """, unsafe_allow_html=True)
@@ -74,14 +90,14 @@ client1.on_message = on_message
 st.title("🎙️ INTERFACES MULTIMODALES")
 st.subheader("🧬 Control por Voz con MQTT")
 
-# Imagen
+# Imagen decorativa
 image = Image.open("voice_ctrl.jpg")
-st.image(image, width=250, caption="CyberVoice Interface")
+st.image(image, width=280, caption="CyberVoice Interface")
 
-st.markdown("### 🗣️ Da una orden por voz")
+st.markdown("## 🗣️ Da una orden por voz")
 st.caption("Presiona el botón y habla. El mensaje se enviará vía MQTT al broker.")
 
-# Botón Bokeh para reconocimiento de voz
+# Botón de reconocimiento de voz
 stt_button = Button(label="🎤 Iniciar reconocimiento", width=250)
 stt_button.js_on_event("button_click", CustomJS(code="""
     var recognition = new webkitSpeechRecognition();
@@ -102,7 +118,7 @@ stt_button.js_on_event("button_click", CustomJS(code="""
     recognition.start();
 """))
 
-# Activador del botón
+# Escuchar el evento de voz
 result = streamlit_bokeh_events(
     stt_button,
     events="GET_TEXT",
@@ -112,7 +128,7 @@ result = streamlit_bokeh_events(
     debounce_time=0
 )
 
-# Procesamiento de voz
+# Publicar el mensaje de voz
 if result and "GET_TEXT" in result:
     texto_voz = result.get("GET_TEXT").strip()
     st.success(f"🎧 Escuchado: `{texto_voz}`")
@@ -128,4 +144,4 @@ if result and "GET_TEXT" in result:
         pass
 
 st.markdown("---")
-st.markdown("<center><sub style='color:#39ff14'>CyberVoice Interface - Neon Protocol v1.0</sub></center>", unsafe_allow_html=True)
+st.markdown("<center><small>🧠 CyberVoice Interface - <em>Neon Protocol v1.1</em></small></center>", unsafe_allow_html=True)
